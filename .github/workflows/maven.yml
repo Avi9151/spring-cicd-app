@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CI with Maven & Docker
 
 on:
   push:
@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -20,15 +21,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: project Cicd flow
-        run: mvn clean install
+      - name: Build JAR with Maven
+        run: mvn clean package -DskipTests
 
-
-      - uses: actions/checkout@v3
-        name: Check out code
-
-      - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push Docker image
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
         with:
           image: admin9151/spring-cicd-docker-image
           tags: latest
